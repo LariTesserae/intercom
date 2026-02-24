@@ -1,0 +1,6 @@
+intercom.db
+intercom.db-shm
+intercom.db-wal
+__pycache__/
+*.pyc
+/hooks/
