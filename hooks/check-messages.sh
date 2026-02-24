@@ -38,9 +38,9 @@ sqlite3 "$DB" "
     WHERE last_seen_id < (SELECT COALESCE(MAX(id), 0) FROM messages)
 " 2>/dev/null
 
-COUNT=$(echo "$NEW_MESSAGES" | wc -l | tr -d ' ')
+COUNT=$(sqlite3 "$DB" "SELECT COUNT(*) FROM messages WHERE id > $MIN_ID" 2>/dev/null)
 
 # Escape for JSON
 ESCAPED=$(echo "$NEW_MESSAGES" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read()))" | sed 's/^"//;s/"$//')
 
-echo "{\"additionalContext\": \"[Intercom: ${COUNT} new message(s)]\\n${ESCAPED}\"}"
+echo "{\"hookSpecificOutput\": {\"hookEventName\": \"UserPromptSubmit\", \"additionalContext\": \"[Intercom: ${COUNT} new message(s)]\\n${ESCAPED}\"}}"
